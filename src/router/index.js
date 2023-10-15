@@ -1,29 +1,87 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
-Vue.use(VueRouter)
+import Vue from "vue";
+import VueRouter from "vue-router";
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/menu",
+    name: "menu",
+    component: () => import("../components/Menus.vue"),
+  },
+
+  {
+    path: "/",
+    name: "home",
+    component: () => import("../views/Homeofficial"),
+  },
+
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/Register"),
+  },
+
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/Login"),
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: "/account",
+    name: "account",
+    component: () => import("../views/Account"),
+  },
+  {
+    path: "/trainer",
+    name: "trainers",
+    component: () => import("../views/trainer"),
+  },
+  {
+    path: "/courses",
+    name: "courses",
+    component: () => import("../views/Courses"),
+  },
+  {
+    path: "/course/:courseId",
+    name: "course",
+    component: () => import("../views/Course-view"),
+  },
+  {
+    path: "/book",
+    name: "book",
+    component: () => import("../components/Book.vue"),
+  },
+  {
+    path: "/manageTrainer",
+    name: "Admintrainer",
+    component: () => import("../views/Admintrainer.vue"),
+  },
+  {
+    path: "/manageTrainerAdd",
+    name: "AdmintrainerAdd",
+    component: () => import("../views/AdmintrainerAdd.vue"),
+  },
+  {
+    path: "/manageCourse",
+    name: "Admincourse",
+    component: () => import("../views/Admincourse.vue"),
+  },
+  {
+    path: "/manageCourseAdd",
+    name: "AdmincourseAdd",
+    component: () => import("../views/AdmincourseAdd.vue"),
+  },
+  {
+    path: "/mybook",
+    name: "mybook",
+    component: () => import("../views/MyBook.vue"),
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
