@@ -27,11 +27,6 @@ const routes = [
     component: () => import("../views/Login"),
   },
   {
-    path: "/account",
-    name: "account",
-    component: () => import("../views/Account"),
-  },
-  {
     path: "/trainer",
     name: "trainers",
     component: () => import("../views/trainer"),
@@ -45,11 +40,6 @@ const routes = [
     path: "/course/:courseId",
     name: "course",
     component: () => import("../views/Course-view"),
-  },
-  {
-    path: "/book",
-    name: "book",
-    component: () => import("../components/Book.vue"),
   },
   {
     path: "/manageTrainer",
@@ -75,6 +65,21 @@ const routes = [
     path: "/mybook",
     name: "mybook",
     component: () => import("../views/MyBook.vue"),
+  },
+  {
+    path: "/Admindeletebook",
+    name: "Admindeletebook",
+    component: () => import("../views/Admindeletebook.vue"),
+  },
+  {
+    path: "/Cuscancelbook",
+    name: "Cuscancelbook",
+    component: () => import("../views/Cuscancelbook.vue"),
+  },
+  {
+    path: "/manageBook",
+    name: "manageBook",
+    component: () => import("../views/Adminbook.vue"),
   },
 ];
 

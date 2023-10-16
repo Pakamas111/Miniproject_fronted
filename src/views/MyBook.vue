@@ -11,13 +11,32 @@
               <v-col cols="12" sm="12" md="12">
                 <h2>My Book</h2>
               </v-col>
-              <v-card v-for="(item, index) in bookItems" :key="index">
-                <v-card-title>courseName: {{ item.course.courseName }}</v-card-title>
-                <v-card-text>bookDate: {{ item.bookDate }}</v-card-text>
-                <v-card-text>trainerName: {{ item.course.trainer.trainerName }}</v-card-text>
-              </v-card>
-              <v-col cols="12" sm="12" md="12"> </v-col>
-              <v-col cols="12" sm="12" md="12"> </v-col>
+              <v-col>
+                <v-card
+                  v-for="(item, index) in bookItems"
+                  :key="index"
+                  style="margin-top: 20px"
+                >
+                  <v-col>
+                    <v-card-title
+                      >courseName: {{ item.course.courseName }}</v-card-title
+                    >
+                    <v-card-text>bookDate: {{ item.bookDate }}</v-card-text>
+                    <v-card-text
+                      >trainerName:
+                      {{ item.course.trainer.trainerName }}</v-card-text
+                    >
+                    <div style="display: flex; justify-content: flex-end">
+                      <v-btn
+                        @click="cancelBook(item)"
+                        color="red"
+                        style="color: #fff"
+                        >ยกเลิกการจอง</v-btn
+                      >
+                    </div>
+                  </v-col>
+                </v-card>
+              </v-col>
             </v-row>
           </v-container>
         </v-card>
@@ -28,6 +47,7 @@
 
 <script>
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -58,6 +78,42 @@ export default {
         console.error(error.message);
         this.error = "Failed to fetch courses data";
       }
+    },
+
+    async cancelBook(item) {
+      Swal.fire({
+        title: "แจ้งเตือน!",
+        text: `คุณต้องการยกเลิกการจอง ${item.course.courseName}?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ตกลง",
+        cancelButtonText: "ยกเลิก",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await axios.delete(
+              process.env.VUE_APP_NOT_SECRET_CODE + `/book/${item.id}`
+            );
+            if (response.status === 200) {
+              Swal.fire({
+                title: "ยกเลิกสำเร็จ!",
+                icon: "success",
+                confirmButtonText: "ตกลง",
+                timer: 1500,
+              });
+               this.getAllBook();
+            }
+          } catch (err) {
+            Swal.fire({
+              title: "เกิดข้อผิดพลาด!",
+              icon: "error",
+              confirmButtonText: "ตกลง",
+              timer: 1500,
+            });
+            console.error(err);
+          }
+        }
+      });
     },
   },
 };

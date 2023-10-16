@@ -55,7 +55,10 @@
               <v-btn depressed rounded text v-if="isAdmin" @click="gotoManageCourses()"
                 >MANAGE Courses</v-btn
               >
-
+              <v-divider class="my-3" v-if="isAdmin"></v-divider>
+              <v-btn depressed rounded text v-if="isAdmin" @click="gotoManageBook()"
+                >MANAGE Book</v-btn
+              >
               <v-divider class="my-3" v-if="!isAdmin"></v-divider>
               <v-btn depressed rounded text v-if="!isAdmin" @click="gotoMyBook()" >
                 MY BOOK</v-btn>
@@ -110,6 +113,9 @@ export default {
     },
     gotoManageCourses() {
       this.$router.push({ path: "/manageCourse" }).catch(() => {});
+    },
+    gotoManageBook() {
+      this.$router.push({ path: "/manageBook" }).catch(() => {});
     },
     gotoMyBook() {
       this.$router.push({ path: "/mybook" }).catch(() => {});

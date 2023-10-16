@@ -22,14 +22,17 @@
                 </p>
                 <p class="trainer-tel">Tel: {{ course.trainer.trainertel }}</p>
               </div>
-              <v-btn
-                v-if="!course.book"
-                text
-                style="color: #fff"
-                @click="gotoCourse(course.courseId)"
-                >จอง</v-btn
-              >
-              <h1 v-if="course.book">จองแล้ว</h1>
+              <div v-if="!admin">
+                <v-btn
+                  v-if="!course.book"
+                  text
+                  style="color: #fff"
+                  @click="gotoCourse(course.courseId)"
+                >
+                  reserve</v-btn
+                >
+                <h1 v-if="course.book">Already reserved</h1>
+              </div>
             </v-card>
           </v-col>
         </v-row>
@@ -56,6 +59,8 @@ export default {
       error: null,
       bookData: false,
       bookItems: [],
+      role: null,
+      admin: null,
     };
   },
   methods: {
@@ -118,6 +123,8 @@ export default {
   created() {
     this.getAllBook();
     this.getAllCourses();
+    this.role = JSON.parse(localStorage.getItem("auth"))?.usertype;
+    this.admin = this.role === "1";
   },
 };
 </script>
