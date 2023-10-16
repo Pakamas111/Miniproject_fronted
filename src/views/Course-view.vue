@@ -28,7 +28,7 @@
                 <v-col cols="12" xs="12" sm="12" md="12" class="card-container">
                   <v-date-picker
                     v-model="dateBook"
-                    color="primary"
+                    color="#fbc02d"
                   ></v-date-picker>
                 </v-col>
                 <v-col cols="12" xs="12" sm="12" md="12" class="card-container">

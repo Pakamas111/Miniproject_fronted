@@ -26,12 +26,14 @@
                 <v-btn
                   v-if="!course.book"
                   text
-                  style="color: #fff"
+                  style="color: #fbc02d"
                   @click="gotoCourse(course.courseId)"
                 >
                   reserve</v-btn
                 >
-                <h1 v-if="course.book">Already reserved</h1>
+                <h1 v-if="course.book" style="color: #d01716; font-size: 22px">
+                  Already reserved
+                </h1>
               </div>
             </v-card>
           </v-col>

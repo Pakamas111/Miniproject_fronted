@@ -29,7 +29,7 @@
                     <div style="display: flex; justify-content: flex-end">
                       <v-btn
                         @click="cancelBook(item)"
-                        color="red"
+                        color="#d01716"
                         style="color: #fff"
                         >ยกเลิกการจอง</v-btn
                       >
