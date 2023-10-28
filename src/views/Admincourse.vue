@@ -17,9 +17,45 @@
       class="elevation-1"
     >
       <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="editDialog" max-width="600px">
+      <v-card>
+        <v-card-title>แก้ไขข้อมูล</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="editCourse.courseName"
+            label="ชื่อ course"
+          ></v-text-field>
+
+          <v-select
+            v-model="trainerID"
+            :items="trainerItems"
+            label="เทรนเนอร์"
+            item-value="trainerId"
+            item-text="trainerName"
+            required
+          ></v-select>
+
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-top: 10px;
+            "
+          >
+            <v-btn color="primary" @click="updateCourse(editCourse.courseId)"
+              >บันทึก</v-btn
+            >
+            <v-btn style="margin-left: 10px" @click="cancelEdit">ยกเลิก</v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -30,7 +66,11 @@ import axios from "axios";
 export default {
   data() {
     return {
+      editCourse: {},
+      editDialog: false,
       CourseItems: [],
+      trainerItems: [],
+      trainerID: null,
       headers: [
         {
           text: "#",
@@ -63,6 +103,7 @@ export default {
 
   created() {
     this.getAllCourse();
+    this.getAllTrainer();
   },
 
   computed: {
@@ -71,9 +112,76 @@ export default {
         return { ...item, index: index + 1 };
       });
     },
+    trainerIdModel() {
+      if (this.editCourse && this.editCourse.trainer) {
+        return this.editCourse.trainer.trainerId;
+      } else {
+        return null;
+      }
+    },
   },
 
   methods: {
+    editItem(item) {
+      const data = { ...item };
+      this.trainerID = item.trainer.trainerId
+      this.editCourse = data;
+      this.editDialog = true;
+    },
+    cancelEdit() {
+      this.editCourse = {};
+      this.trainerID = null
+      this.editDialog = false;
+    },
+
+    async getAllTrainer() {
+      try {
+        const response = await axios.get(
+          process.env.VUE_APP_NOT_SECRET_CODE + `/trainer`
+        );
+        if (response.status == 200) {
+          this.trainerItems = response.data;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async updateCourse(courseId) {
+      try {
+        const response = await axios.put(
+          process.env.VUE_APP_NOT_SECRET_CODE + `/course/${courseId}`,
+          {
+            courseName: this.editCourse.courseName,
+            user: {
+              userId: JSON.parse(localStorage.getItem("auth"))?.userId,
+            },
+            trainer: {
+              trainerId: this.trainerID,
+            },
+          }
+        );
+        if (response.status === 200) {
+          Swal.fire({
+            title: "แก้ไขข้อมูลสำเร็จ!",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+            timer: 1500,
+          });
+          this.getAllCourse();
+          this.getAllTrainer();
+          this.editDialog = false;
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+          timer: 1500,
+        });
+      }
+    },
+
     async getAllCourse() {
       try {
         const response = await axios.get(

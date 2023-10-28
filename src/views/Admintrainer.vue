@@ -17,9 +17,40 @@
       class="elevation-1"
     >
       <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
+
+    <v-dialog v-model="editDialog" max-width="600px">
+      <v-card>
+        <v-card-title>แก้ไขข้อมูล</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="editTrainer.trainerName"
+            label="trainerName"
+          ></v-text-field>
+          <v-text-field
+            v-model="editTrainer.trainertel"
+            label="trainertel"
+          ></v-text-field>
+
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-top: 10px;
+            "
+          >
+            <v-btn color="primary" @click="updateTrainer(editTrainer.trainerId)"
+              >บันทึก</v-btn
+            >
+            <v-btn style="margin-left: 10px" @click="cancelEdit">ยกเลิก</v-btn>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -30,6 +61,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      editTrainer: {},
       trainerItems: [],
       headers: [
         {
@@ -68,6 +100,45 @@ export default {
   },
 
   methods: {
+    editItem(item) {
+      const data = { ...item };
+      console.log("data", data);
+      this.editTrainer = data;
+      this.editDialog = true;
+    },
+    cancelEdit() {
+      this.editTrainer = {};
+      this.editDialog = false;
+    },
+
+    async updateTrainer(TrainerId) {
+      try {
+        const response = await axios.put(
+          process.env.VUE_APP_NOT_SECRET_CODE + `/trainer/${TrainerId}`,
+          {
+            trainerName: this.editTrainer.trainerName,
+            trainertel: this.editTrainer.trainertel
+          }
+        );
+        if (response.status === 200) {
+          Swal.fire({
+            title: "แก้ไขข้อมูลสำเร็จ!",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+            timer: 1500,
+          });
+          this.getAllTrainer();
+          this.editDialog = false;
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+          timer: 1500,
+        });
+      }
+    },
     async getAllTrainer() {
       try {
         const response = await axios.get(
